@@ -3,8 +3,8 @@
 This repository contains the solution for the React Full-Stack Developer technical assessment. It recreates the Rewards page functionality of the platform using **React** and **Supabase**.
 
 ## 🚀 Live Demo
+https://flowvah.netlify.app/#/
 
-**[Insert Your Netlify/Vercel URL Here]**
 
 ## 🛠 Tech Stack
 
@@ -16,7 +16,7 @@ This repository contains the solution for the React Full-Stack Developer technic
 ## ✨ Key Features
 
 1.  **Authentication System**:
-    *   Full Email/Password Sign Up & Login flows. using Supabase Auth
+    *   Full Email and Password Sign Up & Login flows. using Supabase Auth
     *   Protected Routes implementation. using Supabase Auth
     *   Persistent session management using Supabase Auth.
 2.  **Rewards Dashboard**:
