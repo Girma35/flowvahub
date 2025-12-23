@@ -1,10 +1,23 @@
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
-  
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User';
+  const avatarUrl = user?.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id || 'default'}`;
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/login');
+  };
+
   const navItems = [
     { label: 'Home', icon: 'fa-house', path: '/' },
     { label: 'Discovery', icon: 'fa-compass', path: '/discovery' },
@@ -17,14 +30,13 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-zinc-800 z-50 flex justify-around p-3">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black/90 backdrop-blur-lg border-t border-zinc-200 dark:border-zinc-800 z-50 flex justify-around p-3 transition-colors duration-300">
         {navItems.slice(0, 4).map((item) => (
           <Link
             key={item.path}
             to={item.path}
-            className={`flex flex-col items-center gap-1 ${
-              location.pathname === item.path ? 'text-blue-400' : 'text-zinc-500'
-            }`}
+            className={`flex flex-col items-center gap-1 ${location.pathname === item.path ? 'text-blue-400' : 'text-zinc-500'
+              }`}
           >
             <i className={`fa-solid ${item.icon} text-lg`}></i>
             <span className="text-[10px] font-medium">{item.label}</span>
@@ -33,13 +45,11 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-64 glass border-r border-zinc-800 h-screen sticky top-0">
+      <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-black/40 backdrop-blur-xl border-r border-zinc-200 dark:border-zinc-800 h-screen sticky top-0 transition-colors duration-300">
         <div className="p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 accent-gradient rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-              <i className="fa-solid fa-layer-group text-white text-xl"></i>
-            </div>
-            <span className="text-xl font-extrabold tracking-tight">Flowva<span className="text-blue-500">Hub</span></span>
+            {/* Logo removed */}
+            <span className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Flowva<span className="text-blue-500">Hub</span></span>
           </div>
         </div>
 
@@ -48,32 +58,43 @@ const Sidebar: React.FC = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                location.pathname === item.path
-                  ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-                  : 'text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100'
-              }`}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${location.pathname === item.path
+                ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100'
+                }`}
             >
-              <i className={`fa-solid ${item.icon} ${
-                location.pathname === item.path ? 'text-blue-400' : 'group-hover:text-zinc-100'
-              }`}></i>
+              <i className={`fa-solid ${item.icon} ${location.pathname === item.path ? 'text-blue-400' : 'group-hover:text-zinc-900 dark:group-hover:text-zinc-100'
+                }`}></i>
               <span className="font-medium">{item.label}</span>
             </Link>
           ))}
         </nav>
 
-        <div className="p-4 border-t border-zinc-800">
-          <div className="bg-zinc-900/50 rounded-2xl p-4 border border-zinc-800">
-            <p className="text-xs text-zinc-500 mb-2 font-medium">TIER STATUS</p>
-            <div className="flex items-center justify-between mb-2">
-              <span className="font-bold text-sm">Platinum Elite</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400">PRO</span>
+        <div className="p-4 border-t border-zinc-800 space-y-4">
+
+          {/* Profile Summary */}
+          <div className="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-800/50 transition-colors duration-300">
+            {/* Theme Toggle & Logout */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-zinc-500 hover:text-zinc-900 dark:hover:text-white bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800/20 dark:hover:bg-zinc-800 border border-zinc-200 dark:border-zinc-700/50 transition-all duration-200"
+                title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                <i className={`fa-solid ${theme === 'dark' ? 'fa-sun' : 'fa-moon'}`}></i>
+                <span className="text-xs font-bold">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+              </button>
+
+              <button
+                onClick={handleLogout}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-3 rounded-xl text-zinc-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all duration-200"
+                title="Logout"
+              >
+                <i className="fa-solid fa-right-from-bracket"></i>
+              </button>
             </div>
-            <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-              <div className="h-full accent-gradient" style={{ width: '75%' }}></div>
-            </div>
-            <p className="text-[10px] text-zinc-500 mt-2">2,500 pts until next tier</p>
           </div>
+
         </div>
       </aside>
     </>
