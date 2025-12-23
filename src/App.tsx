@@ -52,11 +52,11 @@ const App = () => {
     <HashRouter>
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 selection:bg-blue-500/30">
         <Routes>
-          {/* Public Routes */}
+
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <Signup />} />
 
-          {/* Protected Main App Structure */}
+
           {user ? (
             <Route
               path="*"
@@ -83,7 +83,7 @@ const App = () => {
               }
             />
           ) : (
-            /* Redirect to Login if not authenticated */
+
             <Route path="*" element={<Navigate to="/login" />} />
           )}
         </Routes>

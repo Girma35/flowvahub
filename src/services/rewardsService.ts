@@ -21,7 +21,7 @@ export async function fetchQuestsWithStatus(userId: string): Promise<Quest[]> {
 
         if (uqError) {
             console.error('Error fetching user_quests:', uqError);
-            // Don't throw here, just assume no quests started
+
         }
 
         const statusMap = new Map((userQuests || []).map(uq => [uq.quest_id, uq.status]));
@@ -49,9 +49,6 @@ export async function fetchUserStats(userId: string): Promise<UserStats> {
     try {
         console.log('Fetching user stats for:', userId);
 
-        // Explicitly select ONLY columns that exist in the user's 'profiles' schema
-        // User schema: id, total_points, referrals, streak, full_name, avatar_url, updated_at
-        // REMOVED 'rank' and 'last_check_in' as they do not exist
         const { data, error } = await supabase
             .from('profiles')
             .select('streak, total_points, referrals, full_name, avatar_url, updated_at')
@@ -59,23 +56,18 @@ export async function fetchUserStats(userId: string): Promise<UserStats> {
             .single();
 
         if (error) {
-            // Check specifically for row missing vs column/schema errors
             if (error.code === 'PGRST116') {
-                // Profile does not exist - this is a valid '0 streak' scenario, not a schema error.
-                // We can return defaults here safely.
                 const { data: { user } } = await supabase.auth.getUser();
                 return {
                     totalPoints: 0,
                     streak: 0,
                     referrals: 0,
-                    rank: 1, // Default
+                    rank: 1,
                     fullName: user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User',
                     lastCheckIn: undefined
                 };
             }
 
-            // For OTHER errors (schema mismatch, network, permission), THROW it so the UI shows an alert.
-            // This proves we are not using 'mock' data silently.
             throw new Error(`Supabase Error: ${error.message} (Code: ${error.code})`);
         }
 
@@ -85,16 +77,13 @@ export async function fetchUserStats(userId: string): Promise<UserStats> {
             totalPoints: Number(data.total_points ?? 0),
             streak: Number(data.streak ?? 0),
             referrals: Number(data.referrals ?? 0),
-            // Rank doesn't exist in DB, defaulting to 1
             rank: 1,
-            // Map updated_at to lastCheckIn
             lastCheckIn: data.updated_at,
             fullName: data.full_name,
             avatarUrl: data.avatar_url
         };
     } catch (err: any) {
         console.error('CRITICAL: Error fetching user stats:', err);
-        // Propagate the error to the caller (Dashboard)
         throw err;
     }
 }
@@ -102,7 +91,7 @@ export async function fetchUserStats(userId: string): Promise<UserStats> {
 
 export async function performDailyCheckIn(userId: string) {
     try {
-        // 1. Fetch current profile stats directly
+
         const { data: profile, error: fetchError } = await supabase
             .from('profiles')
             .select('streak, total_points, updated_at')
@@ -111,7 +100,7 @@ export async function performDailyCheckIn(userId: string) {
 
         if (fetchError) throw fetchError;
 
-        // Use updated_at since last_check_in doesn't exist in this schema
+
         const lastActivity = profile.updated_at ? new Date(profile.updated_at) : new Date(0);
         const today = new Date();
 
@@ -120,8 +109,6 @@ export async function performDailyCheckIn(userId: string) {
             d1.getMonth() === d2.getMonth() &&
             d1.getDate() === d2.getDate();
 
-        // Prevent multiple check-ins on the same day
-        // Note: This assumes 'updated_at' is primarily modified by check-ins.
         if (isSameDay(lastActivity, today)) {
             return {
                 success: false,
@@ -130,29 +117,18 @@ export async function performDailyCheckIn(userId: string) {
             };
         }
 
-        // 2. Calculate New Stats
-        // User requested simple "add 1 to streak day". 
-        // To support infinite streaks with continuity: 
-        // We check if the last activity was yesterday to maintain the streak, otherwise reset (standard streak logic).
-        // However, if the user strictly implied "just add 1" regardless of gaps, we would remove the consecutive check.
-        // But valid streaks usually require daily action. We will use a loose consecutive check.
+
 
         const yesterday = new Date(today);
         yesterday.setDate(yesterday.getDate() - 1);
         const isConsecutive = isSameDay(lastActivity, yesterday);
 
-        // If it's consecutive, increment. If simple "add 1" is desired regardless of gap, change this line.
-        // Assuming standard streak behavior is desired for a "Daily Streak" feature:
         const newStreak = isConsecutive ? (profile.streak || 0) + 1 : 1;
-
-        // If we strictly follow "continueing from that day like 45d then start with 46d" implying NO reset:
-        // const newStreak = (profile.streak || 0) + 1; 
-        // *Uncomment above if you want streaks to NEVER break* - keeping standard logic for now to prevent bugs.
 
         const pointsToAdd = 100 * newStreak;
         const newTotal = (profile.total_points || 0) + pointsToAdd;
 
-        // 3. Update Database
+
         const { error: updateError } = await supabase
             .from('profiles')
             .update({
@@ -182,7 +158,6 @@ export async function performDailyCheckIn(userId: string) {
 
 
 export async function completeQuest(userId: string, questId: string, rewardAmount: number) {
-    // 1. Mark as completed in user_quests
     const { error: questError } = await supabase
         .from('user_quests')
         .upsert({
@@ -194,7 +169,8 @@ export async function completeQuest(userId: string, questId: string, rewardAmoun
 
     if (questError) throw questError;
 
-    // 2. Add points to profiles
+    if (questError) throw questError;
+
     const { data: currentStats, error: statsError } = await supabase
         .from('profiles')
         .select('total_points')
@@ -219,7 +195,6 @@ export async function completeQuest(userId: string, questId: string, rewardAmoun
 
 export async function redeemReward(userId: string, rewardId: string, cost: number) {
     try {
-        // 1. Get current points strictly
         const { data: profile, error: fetchError } = await supabase
             .from('profiles')
             .select('total_points')
@@ -236,7 +211,7 @@ export async function redeemReward(userId: string, rewardId: string, cost: numbe
             throw new Error(`Insufficient points. You need ${cost} points, but only have ${currentPoints}.`);
         }
 
-        // 2. Deduct points
+
         const { data: updatedProfile, error: updateError } = await supabase
             .from('profiles')
             .update({

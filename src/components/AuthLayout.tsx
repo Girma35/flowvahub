@@ -10,15 +10,15 @@ interface AuthLayoutProps {
 const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) => {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col md:flex-row relative overflow-hidden transition-colors duration-300">
-      {/* Background Decorative Elements */}
+
       <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full filter blur-[120px] -z-0"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-500/5 dark:bg-blue-500/10 rounded-full filter blur-[150px] -z-0"></div>
 
-      {/* Left Side: Form Container */}
+
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-16 lg:p-24 relative z-10">
         <div className="w-full max-w-md">
           <div className="mb-12 flex items-center gap-3 group cursor-pointer">
-            {/* Logo removed */}
+
             <span className="text-3xl font-black text-zinc-900 dark:text-white tracking-tight">Flowva</span>
           </div>
 
@@ -38,7 +38,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
         </div>
       </div>
 
-      {/* Right Side: Visual Hero */}
+
       <div className="hidden md:flex w-1/2 relative items-center justify-center p-12 overflow-hidden">
         <div className="relative z-10 w-full max-w-lg">
           <div className="bg-white dark:bg-black/40 backdrop-blur-2xl border border-zinc-200 dark:border-zinc-800 p-10 rounded-[3rem] shadow-2xl space-y-8 transition-colors duration-300">
@@ -78,7 +78,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitle }) =>
           </div>
         </div>
 
-        {/* Animated Orbs */}
+
         <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-blue-600/10 rounded-full blur-[100px]"></div>
       </div>

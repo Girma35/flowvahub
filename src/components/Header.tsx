@@ -18,7 +18,7 @@ const Header: React.FC<HeaderProps> = ({ stats }) => {
       </div>
 
       <div className="flex items-center gap-4">
-        {/* Points Display */}
+
         <div className="hidden sm:flex items-center gap-3 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-2xl transition-colors duration-300">
           <div className="w-6 h-6 rounded-full bg-yellow-500/20 flex items-center justify-center">
             <i className="fa-solid fa-coins text-yellow-500 text-xs"></i>
@@ -26,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ stats }) => {
           <span className="font-bold text-zinc-900 dark:text-zinc-100">{stats.totalPoints.toLocaleString()}</span>
         </div>
 
-        {/* Profile */}
+
         <div className="flex items-center gap-3 pl-4 border-l border-zinc-200 dark:border-zinc-800 transition-colors duration-300">
           <div className="text-right hidden md:block">
             <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">{displayName}</p>

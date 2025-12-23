@@ -36,7 +36,7 @@ const Signup: React.FC = () => {
             setPassword('');
             setFullname('');
 
-            // Redirect after showing the message for a few seconds
+
             setTimeout(() => navigate('/login'), 6000);
         } catch (err: any) {
             setError(err.message || 'Failed to create account');

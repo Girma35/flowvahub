@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Mobile Bottom Nav */}
+
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-black/90 backdrop-blur-lg border-t border-zinc-200 dark:border-zinc-800 z-50 flex justify-around p-3 transition-colors duration-300">
         {navItems.slice(0, 4).map((item) => (
           <Link
@@ -44,11 +44,11 @@ const Sidebar: React.FC = () => {
         ))}
       </div>
 
-      {/* Desktop Sidebar */}
+
       <aside className="hidden md:flex flex-col w-64 bg-white dark:bg-black/40 backdrop-blur-xl border-r border-zinc-200 dark:border-zinc-800 h-screen sticky top-0 transition-colors duration-300">
         <div className="p-6">
           <div className="flex items-center gap-3">
-            {/* Logo removed */}
+
             <span className="text-xl font-extrabold tracking-tight text-zinc-900 dark:text-white">Flowva<span className="text-blue-500">Hub</span></span>
           </div>
         </div>
@@ -72,9 +72,9 @@ const Sidebar: React.FC = () => {
 
         <div className="p-4 border-t border-zinc-800 space-y-4">
 
-          {/* Profile Summary */}
+
           <div className="flex items-center gap-3 p-3 bg-zinc-50 dark:bg-zinc-900/30 rounded-2xl border border-zinc-200 dark:border-zinc-800/50 transition-colors duration-300">
-            {/* Theme Toggle & Logout */}
+
             <div className="flex items-center gap-2">
               <button
                 onClick={toggleTheme}

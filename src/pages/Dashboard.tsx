@@ -54,7 +54,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
           setRedeemables(rewardData);
           setStats(userStats);
 
-          // Check if already claimed today
+
           if (userStats?.lastCheckIn) {
             const lastDate = new Date(userStats.lastCheckIn).toDateString();
             const today = new Date().toDateString();
@@ -98,7 +98,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
       }));
     } catch (error) {
       console.error("Failed to complete quest:", error);
-      // Rollback if needed
+
       setQuests(prev => prev.map(q => q.id === id ? { ...q, status: QuestStatus.AVAILABLE } : q));
     }
   };
@@ -217,7 +217,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
 
-      {/* Top Banner / Hero */}
+
       <section className="relative overflow-hidden rounded-[2.5rem] p-8 md:p-12 glass bg-white dark:bg-black/40 border border-zinc-200 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-8">
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] -z-10"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500/10 blur-[100px] -z-10"></div>
@@ -253,8 +253,8 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
       </section>
 
 
+
       {activeTab === 'quests' ? (
-        /* Quests Tabs & Grid */
         <section className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
           <div className="flex items-center justify-between">
             <h3 className="text-2xl font-black">Available Quests</h3>
@@ -287,7 +287,6 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
           </div>
         </section>
       ) : (
-        /* Rewards Section */
         <section className="space-y-6 animate-in slide-in-from-bottom-4 duration-500">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
@@ -337,7 +336,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
         </section>
       )}
 
-      {/* Daily Reward Tracker */}
+
       <section className="bg-white dark:bg-black/40 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-[2rem] p-8 transition-colors duration-300">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -351,11 +350,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
         </div>
 
         <div className="grid grid-cols-7 gap-3 sm:gap-4">
-          {/* Show the relevant slice of days (e.g. if streak is 10, show days 7-13) */}
           {Array.from({ length: 7 }, (_, i) => {
-            // Logic to center the view around current progress
-            // If streak < 7, show 1..7
-            // If streak >= 7, show current window
             const windowStart = Math.max(1, stats.streak - 5);
             return windowStart + i;
           }).map((day) => (
@@ -398,7 +393,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
         </div>
       </section>
 
-      {/* Recent Activity Footer */}
+
       <section className="bg-white dark:bg-black/40 backdrop-blur-xl border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 transition-colors duration-300">
         <div className="flex items-center justify-between mb-6">
           <h4 className="font-bold text-zinc-900 dark:text-white">Recent Activity</h4>
@@ -431,7 +426,7 @@ const Dashboard: React.FC<DashboardProps> = ({ stats, setStats }) => {
         title="Share Your Link"
         description="Invite friends and earn 25 points when they join!"
         referrals={stats.referrals}
-        pointsEarned={stats.referrals * 25} // Assuming 25 points per referral as per description
+        pointsEarned={stats.referrals * 25}
       />
 
       <Modal
