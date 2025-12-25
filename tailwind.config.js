@@ -20,5 +20,6 @@ module.exports = {
       },
     },
   },
+  safelist: ['dark', 'light'],
   plugins: [],
 };
